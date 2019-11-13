@@ -8,7 +8,7 @@ type RemoveFirstFromTuple<T extends any[]> = T["length"] extends 0
 
 export default <S>(state: S) => {
   type Unsubscribe = () => any;
-  type Subscription = (prevState: S, newState: S) => Unsubscribe;
+  type Subscription = (prevState: S, newState: S) => any;
 
   let _state = state;
   let _subscriptions: Subscription[] = [];
@@ -16,18 +16,19 @@ export default <S>(state: S) => {
   const notifySubscribers = (prevState: S, newState: S) =>
     _subscriptions.forEach(fn => fn(prevState, newState));
 
-  const reducer = <Fn extends (state: S, ...args: any[]) => any>(fn: Fn) => (
-    ...args: RemoveFirstFromTuple<Parameters<Fn>>
-  ): S =>
+  const createMutator = <Fn extends (state: S, ...args: any[]) => any>(
+    fn: Fn
+  ) => (...args: RemoveFirstFromTuple<Parameters<Fn>>): S =>
     immer(_state, draft => {
       const newState = fn(draft as S, ...args);
       notifySubscribers(_state, newState);
       return newState;
     });
 
-  const effect = <Fn extends (state: S, ...args: any[]) => any>(fn: Fn) => (
-    ...args: RemoveFirstFromTuple<Parameters<Fn>>
-  ): ReturnType<Fn> => fn(_state, ...args);
+  const createEffect = <Fn extends (state: S, ...args: any[]) => any>(
+    fn: Fn
+  ) => (...args: RemoveFirstFromTuple<Parameters<Fn>>): ReturnType<Fn> =>
+    fn(_state, ...args);
 
   const subscribe = (sub: Subscription): Unsubscribe => {
     _subscriptions = [..._subscriptions, sub];
@@ -36,8 +37,8 @@ export default <S>(state: S) => {
   };
 
   return {
-    reducer,
-    effect,
+    createMutator,
+    createEffect,
     subscribe
   };
 };
