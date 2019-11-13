@@ -8,13 +8,13 @@
     Stately
     <br />
     <br />
+    <p>
+      Functional, immutable state management.
+    </p>
+    <br />
     <br />
     <br />
   </h1>
-  <br />
-  <p>
-    Functional, immutable state management.
-  </p>
   <br />
   <br />
   <br />
