@@ -18,12 +18,14 @@ export default <S>(state: S) => {
 
   const createMutator = <Fn extends (state: S, ...args: any[]) => any>(
     fn: Fn
-  ) => (...args: RemoveFirstFromTuple<Parameters<Fn>>): S =>
-    immer(_state, draft => {
-      const newState = fn(draft as S, ...args);
-      notifySubscribers(_state, newState);
-      return newState;
+  ) => (...args: RemoveFirstFromTuple<Parameters<Fn>>): S => {
+    const newState = immer(_state, draft => {
+      fn(draft as S, ...args);
     });
+    notifySubscribers(_state, newState);
+    _state = newState;
+    return newState;
+  };
 
   const createEffect = <Fn extends (state: S, ...args: any[]) => any>(
     fn: Fn
@@ -32,13 +34,17 @@ export default <S>(state: S) => {
 
   const subscribe = (sub: Subscription): Unsubscribe => {
     _subscriptions = [..._subscriptions, sub];
-    return () =>
-      _subscriptions.filter((_, i) => i !== _subscriptions.indexOf(sub));
+    return () => {
+      _subscriptions = _subscriptions.filter(
+        (_, i) => i !== _subscriptions.indexOf(sub)
+      );
+    };
   };
 
   return {
     createMutator,
     createEffect,
-    subscribe
+    subscribe,
+    getState: () => _state
   };
 };
