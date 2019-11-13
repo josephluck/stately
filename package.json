@@ -1,0 +1,25 @@
+{
+  "name": "stately",
+  "version": "1.0.0",
+  "description": "Functional, immutable state management",
+  "main": "./lib/index.js",
+  "files": [
+    "src/",
+    "lib/"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/josephluck/stately"
+  },
+  "types": "./lib/index.d.ts",
+  "scripts": {
+    "dist": "rm -rf ./lib && mkdir lib && tsc",
+    "deploy": "npm run dist && npm publish"
+  },
+  "dependencies": {
+    "immer": "^5.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^3.7.2"
+  }
+}
