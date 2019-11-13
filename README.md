@@ -92,6 +92,15 @@ const changeAChanger = (a: string) =>
   store.createMutator((state, b: string) => (state.a = `${a} stately is ${b}`));
 const aChanger = changeAChanger("yo"); // Returns (b: string) => { a: string; b: { c: string; d: number; }; }
 aChanger("so 🔥"); // Returns { a: string; b: { c: string; d: number; }; }
+
+/**
+ * Mutator updating nested state
+ */
+const multiplyD = store.createMutator(
+  (state, multiplier: number) => (state.b.d = state.b.d * multiplier)
+);
+multiplyD(10);
+multiplyD("ten"); // Argument of type '"ten"' is not assignable to parameter of type 'number'. ts(2345)
 ```
 
 ### Effects
@@ -118,15 +127,6 @@ const asyncChangeA = store.createEffect(
 asyncChangeA(); // Returns Promise<Boolean>
 asyncChangeA("yup...");
 asyncChangeA("nope", "not allowed"); // Fails: Expected 0-1 arguments, but got 2. ts(2554)
-
-/**
- * Mutator updating nested state
- */
-const multiplyD = store.createMutator(
-  (state, multiplier: number) => (state.b.d = state.b.d * multiplier)
-);
-multiplyD(10);
-multiplyD("ten"); // Argument of type '"ten"' is not assignable to parameter of type 'number'. ts(2345)
 ```
 
 ### Subscriptions
