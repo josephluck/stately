@@ -26,5 +26,8 @@
     "tape": "^4.11.0",
     "ts-node": "^8.5.0",
     "typescript": "^3.7.2"
+  },
+  "peerDependencies": {
+    "react": "^16.11.0"
   }
 }
