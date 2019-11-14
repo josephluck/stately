@@ -1,10 +1,24 @@
-import stately from "./";
-import { useState } from "react";
+import { StatelyReturn } from "./";
+import { useState, useEffect } from "react";
 
-export const useStately = (store: ReturnType<typeof stately>) => {
-  const [state] = useState(() => store.getState());
+const makeUseStately = <Store extends StatelyReturn>(store: Store) => {
+  type State = ReturnType<typeof store["getState"]>;
+  type Mapper = (state: State) => any;
 
-  return {
-    state
+  return <M extends Mapper>(mapState: M): ReturnType<typeof mapState> => {
+    const [mappedState, setMappedState] = useState(() =>
+      mapState(store.getState() as State)
+    );
+
+    useEffect(() => {
+      const unsubscribe = store.subscribe((_, nextState) => {
+        setMappedState(mapState(nextState as State));
+      });
+      return unsubscribe;
+    }, [mapState]);
+
+    return mappedState;
   };
 };
+
+export default makeUseStately;

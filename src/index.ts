@@ -1,12 +1,12 @@
 import immer from "immer";
 
-type RemoveFirstFromTuple<T extends any[]> = T["length"] extends 0
-  ? undefined
-  : ((...b: T) => void) extends (a, ...b: infer I) => void
+export type RemoveFirstFromTuple<T extends any[]> = T["length"] extends 0
+  ? []
+  : ((...b: T) => any) extends (a, ...b: infer I) => any
   ? I
   : [];
 
-export default <S>(state: S) => {
+const stately = <S>(state: S) => {
   type Unsubscribe = () => any;
   type Subscription = (prevState: S, newState: S) => any;
 
@@ -18,7 +18,7 @@ export default <S>(state: S) => {
 
   const createMutator = <Fn extends (state: S, ...args: any[]) => any>(
     fn: Fn
-  ) => (...args: RemoveFirstFromTuple<Parameters<Fn>>): S => {
+  ) => (...args: RemoveFirstFromTuple<Parameters<typeof fn>>): S => {
     const newState = immer(_state, draft => {
       fn(draft as S, ...args);
     });
@@ -29,8 +29,9 @@ export default <S>(state: S) => {
 
   const createEffect = <Fn extends (state: S, ...args: any[]) => any>(
     fn: Fn
-  ) => (...args: RemoveFirstFromTuple<Parameters<Fn>>): ReturnType<Fn> =>
-    fn(_state, ...args);
+  ) => (
+    ...args: RemoveFirstFromTuple<Parameters<typeof fn>>
+  ): ReturnType<typeof fn> => fn(_state, ...args);
 
   const subscribe = (sub: Subscription): Unsubscribe => {
     _subscriptions = [..._subscriptions, sub];
@@ -48,3 +49,7 @@ export default <S>(state: S) => {
     getState: () => _state
   };
 };
+
+export type StatelyReturn = ReturnType<typeof stately>;
+
+export default stately;

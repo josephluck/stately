@@ -1,5 +1,5 @@
 import * as test from "tape";
-import stately from "../src/index";
+import stately from "..";
 
 const model = {
   a: "a",

@@ -29,6 +29,7 @@
 - Mutable API powered by [immer](https://github.com/immerjs/immer)
 - 100% inferred type-safety
 - Subscription-based API for becoming notified of state updates
+- Comes with React Hooks bindings out of the box
 
 # Installation
 
@@ -145,4 +146,43 @@ const unsubscribe = store.subscribe((previous, next) => {
  * Removing a subscription
  */
 unsubscribe();
+```
+
+### Usage with React
+
+Stately comes with bindings for React out-of-the-box via React Hooks.
+
+Pass your stately store to the stately hook factory to create a `useStately` hook that can be used in components. Pass the `useStately` hook a "selector" function to map state from the store in to the component.
+
+See the example below:
+
+```typescript
+// Set up the store:
+const store = stately({
+  count: 0
+});
+
+// Create some mutators (these can be used directly in the component without hooks!):
+const increment = store.createMutator(s => s.count++);
+const decrement = store.createMutator(s => s.count--);
+
+// Create a custom hook using the stately hook factory:
+const useStately = makeUseStately(store);
+
+// Render the app and use the hook:
+const App = () => {
+  const count = useStately(s => s.count);
+
+  return (
+    <>
+      <button onClick={decrement}>-</button>
+      <span>{count}</span>
+      <button onClick={increment}>+</button>
+    </>
+  );
+};
+
+const elm = document.createElement("div");
+document.body.appendChild(elm);
+ReactDOM.render(<App />, elm);
 ```
