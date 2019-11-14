@@ -1,6 +1,6 @@
 {
   "name": "@josephluck/stately",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Functional, immutable state management",
   "main": "./lib/index.js",
   "files": [

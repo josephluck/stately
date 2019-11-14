@@ -5,7 +5,10 @@ const makeUseStately = <Store extends StatelyReturn>(store: Store) => {
   type State = ReturnType<typeof store["getState"]>;
   type Mapper = (state: State) => any;
 
-  return <M extends Mapper>(mapState: M): ReturnType<typeof mapState> => {
+  return <M extends Mapper>(
+    mapState: M,
+    dependencies: any[] = []
+  ): ReturnType<typeof mapState> => {
     const [mappedState, setMappedState] = useState(() =>
       mapState(store.getState() as State)
     );
@@ -15,7 +18,7 @@ const makeUseStately = <Store extends StatelyReturn>(store: Store) => {
         setMappedState(mapState(nextState as State));
       });
       return unsubscribe;
-    }, [mapState]);
+    }, [mapState, ...dependencies]);
 
     return mappedState;
   };

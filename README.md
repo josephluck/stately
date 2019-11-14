@@ -205,3 +205,11 @@ const elm = document.createElement("div");
 document.body.appendChild(elm);
 ReactDOM.render(<App />, elm);
 ```
+
+If your state mapping relies on any external dependencies, you can declare them as a second argument to the `useStately` hook:
+
+```typescript
+const myState = useStately(state => state.foo[bar], [bar]);
+```
+
+Whenever a dependency in the array of dependencies changes, the state will be re-mapped and the component will re-render.
