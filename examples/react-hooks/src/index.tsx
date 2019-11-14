@@ -1,8 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
-import stately from "stately";
-import makeUseStately from "stately/lib/hooks";
+import stately from "@josephluck/stately";
+import makeUseStately from "@josephluck/stately/lib/hooks";
 
 // Set up the store:
 const store = stately({

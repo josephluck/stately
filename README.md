@@ -33,7 +33,23 @@
 
 # Installation
 
-TBC
+With yarn:
+
+```bash
+yarn add @josephluck/stately
+```
+
+With npm:
+
+```bash
+npm i --save @josephluck/stately
+```
+
+With react:
+
+```bash
+yarn add @josephluck/stately react
+```
 
 # Example
 
@@ -44,7 +60,7 @@ Stately is designed to be simple, practical and 100% type-safe without introduci
 Stately infers the type of your state from what you pass it as it's initial state. State can be of any type.
 
 ```typescript
-import stately from "../src";
+import stately from "@josephluck/stately";
 
 const store = stately({
   a: "a",
@@ -157,6 +173,9 @@ Pass your stately store to the stately hook factory to create a `useStately` hoo
 See the example below:
 
 ```typescript
+import stately from "@josephluck/stately";
+import makeUseStately from "@josephluck/stately/lib/hooks";
+
 // Set up the store:
 const store = stately({
   count: 0

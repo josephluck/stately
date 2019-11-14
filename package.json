@@ -1,5 +1,5 @@
 {
-  "name": "stately",
+  "name": "@josephluck/stately",
   "version": "1.0.0",
   "description": "Functional, immutable state management",
   "main": "./lib/index.js",
