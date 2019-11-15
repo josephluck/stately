@@ -31,6 +31,8 @@
 - Subscription-based API for becoming notified of state updates
 - Comes with React Hooks bindings out of the box
 
+See the accompanying blog post for more information on how Stately came to be: https://josephluck.co.uk/blog/simple-state-management/
+
 # Installation
 
 With yarn:
