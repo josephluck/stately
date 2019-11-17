@@ -42,11 +42,17 @@ const stately = <S>(state: S) => {
     };
   };
 
+  const replaceState = (state: S) => {
+    notifySubscribers(_state, state);
+    _state = state;
+  };
+
   return {
     createMutator,
     createEffect,
     subscribe,
-    getState: () => _state
+    getState: () => _state,
+    replaceState
   };
 };
 

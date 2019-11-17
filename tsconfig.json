@@ -3,6 +3,7 @@
     "target": "es3",
     "module": "commonjs",
     "allowJs": false,
+    "jsx": "react",
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
     "preserveConstEnums": true,
@@ -13,7 +14,8 @@
     "noUnusedLocals": true,
     "strictNullChecks": false,
     "removeComments": false,
-    "noImplicitAny": false
+    "noImplicitAny": false,
+    "esModuleInterop": true
   },
   "include": ["src/**/*"]
 }

@@ -166,9 +166,19 @@ const unsubscribe = store.subscribe((previous, next) => {
 unsubscribe();
 ```
 
+### Replacing entire state
+
+Stately returns a convenience method for replacing the entire store's state:
+
+```typescript
+store.replaceState(newStoreState);
+```
+
 ### Usage with React
 
 Stately comes with bindings for React out-of-the-box via React Hooks.
+
+See [the react example](./examples/react) for more a complete project.
 
 Pass your stately store to the stately hook factory to create a `useStately` hook that can be used in components. Pass the `useStately` hook a "selector" function to map state from the store in to the component.
 
@@ -215,3 +225,94 @@ const myState = useStately(state => state.foo[bar], [bar]);
 ```
 
 Whenever a dependency in the array of dependencies changes, the state will be re-mapped and the component will re-render.
+
+### Usage with Next
+
+Stately comes with SSR support for Next.js which changes usage of the React example above to support SSR.
+
+First, you need to wrap your store creation in a function that returns the store and anything related to it (mutators, effects etc). This store creation should be passed to `statelySSR` which returns some hooks and higher-order-components that can be used across your next app. This is because a new instance of the stately store is created on every server-side render (to make sure there's no global state shared between users visiting your app!).
+
+Second, you can't use the standard `makeUseStately` hook factory as it doesn't work with SSR. Instead, you must use `useStoreState` hook returned from `statelySSR` to subscribe your components to the store state. This hook works exactly the same as the `useStately` hook from the non-SSR react hooks (but obviously works with SSR). If you wish to access any other returned value (like mutations, effects etc) from your `makeStore`, use the `useStore` hook returned from `statelySSR` - you shouldn't use the `store` property from it though, use the `useStoreState` hook for that instead!
+
+Third, you must wrap your next pages in the `withStately` higher-order-component returned from `useStoreState`. This higher-order-component provides the return value of your `makeStore` function through React's Context feature (which is then used by the other hooks explained above).
+
+See [the next example](./examples/next) for more a complete project.
+
+```typescript
+import React from "react";
+import stately from "@josephluck/stately";
+import { statelySSR, MakeStatelyCtx } from "@josephluck/stately/lib/next";
+
+interface State {
+  count: number;
+}
+
+/**
+ * Wrap the instantiation of the stately store in a function so
+ * that it can be called on both the server and the client.
+ */
+const makeStore = () => {
+  const state: State = {
+    count: 0
+  };
+  const store = stately(state);
+  const increment = store.createMutator(state => {
+    state.count++;
+  });
+  const decrement = store.createMutator(state => {
+    state.count--;
+  });
+  return {
+    store,
+    increment,
+    decrement
+  };
+};
+
+/**
+ * Retrieve stately provider and stately hooks from the SSR
+ * utility:
+ *
+ * withStately: used to wrap your next pages that need your store.
+ * useStore: used to grab mutators and effects from makeStore().
+ * useStoreState: a replacement for useStately, except it works with SSR.
+ */
+const { withStately, useStore, useStoreState } = statelySSR(makeStore);
+
+/**
+ * Used to type getInitialProps for next pages.
+ * Makes sure that anything returned from makeStore is inferred and passed
+ * down strongly-typed to getInitialProps ctx.
+ */
+type StatelyCtx = MakeStatelyCtx<ReturnType<typeof makeStore>>;
+
+/**
+ * An example Next page using the SSR version of the stately store.
+ */
+const Home = () => {
+  const count = useStoreState(s => s.count); // NB: you can't use the standard useStately as it doesn't work with SSR
+  const { increment, decrement } = useStore(); // NB: inferred from the return of makeStore()
+  return (
+    <>
+      <h1>Hello, World</h1>
+      <button onClick={decrement}>-</button>
+      {count}
+      <button onClick={increment}>-</button>
+    </>
+  );
+};
+
+/**
+ * getInitialProps receives the return value of makeStore.
+ * The type utility MakeStatelyCtx makes sure all the typescript types
+ * are inferred.
+ */
+Home.getInitialProps = async ({ store }: StatelyCtx) => {
+  store.increment();
+  return {
+    page: "This is the home page"
+  };
+};
+
+export default withStately(Home);
+```

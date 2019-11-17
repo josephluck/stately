@@ -1,6 +1,6 @@
 {
   "name": "@josephluck/stately",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Functional, immutable state management",
   "main": "./lib/index.js",
   "files": [
@@ -13,7 +13,7 @@
   },
   "types": "./lib/index.d.ts",
   "scripts": {
-    "test": "ts-node node_modules/.bin/tape ./test/*.spec.ts | tap-spec",
+    "test": "ts-node node_modules/.bin/tape ./src/test/*.spec.ts | tap-spec",
     "build": "rm -rf ./lib && mkdir lib && tsc",
     "deploy": "npm run build && npm publish"
   },
@@ -21,16 +21,15 @@
     "immer": "^5.0.0"
   },
   "devDependencies": {
-    "@types/react": "^16.9.11",
-    "@types/react-dom": "^16.9.4",
+    "@types/react": "16.9.11",
+    "@types/react-dom": "16.9.4",
     "@types/tape": "^4.2.33",
-    "react-dom": "^16.11.0",
+    "next": "^9.1.3",
+    "react": "16.12.0",
+    "react-dom": "16.12.0",
     "tap-spec": "^5.0.0",
     "tape": "^4.11.0",
     "ts-node": "^8.5.0",
     "typescript": "^3.7.2"
-  },
-  "peerDependencies": {
-    "react": "^16.11.0"
   }
 }

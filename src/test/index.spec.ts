@@ -1,4 +1,4 @@
-import * as test from "tape";
+import test from "tape";
 import stately from "..";
 
 const model = {
@@ -78,6 +78,17 @@ test("subscriptions / simple", t => {
   });
   const changeA = store.createMutator((state, a: string) => (state.a = a));
   changeA("aa");
+});
+
+test("subscriptions / replace state", t => {
+  t.plan(3);
+  const store = stately(model);
+  store.subscribe((prevState, nextState) => {
+    t.equal(prevState.a, "a", "previous state remains unchanged");
+    t.equal(prevState.b.c, "d", "previous state remains unchanged");
+    t.equal(nextState.a, "aa", "next state reflects updated state");
+  });
+  store.replaceState({ ...model, a: "aa" });
 });
 
 test("subscriptions / adding additional subscriptions", t => {

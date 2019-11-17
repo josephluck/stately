@@ -1,15 +1,15 @@
 {
-  "name": "react-hooks",
+  "name": "stately-react-example",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@josephluck/stately": "^1.0.0",
+    "@josephluck/stately": "*",
     "@types/jest": "24.0.23",
     "@types/node": "12.12.7",
     "@types/react": "16.9.11",
     "@types/react-dom": "16.9.4",
-    "react": "^16.11.0",
-    "react-dom": "^16.11.0",
+    "react": "16.12.0",
+    "react-dom": "16.12.0",
     "react-scripts": "3.2.0",
     "typescript": "3.7.2"
   },

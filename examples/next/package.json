@@ -1,5 +1,5 @@
 {
-  "name": "ssr",
+  "name": "stately-next-example",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -8,9 +8,9 @@
     "start": "next start"
   },
   "dependencies": {
-    "@josephluck/stately": "^1.0.1",
-    "@types/react": "^16.9.11",
-    "@types/react-dom": "^16.9.4",
+    "@josephluck/stately": "*",
+    "@types/react": "16.9.11",
+    "@types/react-dom": "16.9.4",
     "next": "9.1.3",
     "react": "16.12.0",
     "react-dom": "16.12.0",
