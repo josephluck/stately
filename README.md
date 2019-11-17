@@ -287,17 +287,28 @@ const { withStately, useStore, useStoreState } = statelySSR(makeStore);
 type StatelyCtx = MakeStatelyCtx<ReturnType<typeof makeStore>>;
 
 /**
- * An example Next page using the SSR version of the stately store.
+ * A simple component using the SSR version of the stately store.
  */
-const Home = () => {
+const Counter = () => {
   const count = useStoreState(s => s.count); // NB: you can't use the standard useStately as it doesn't work with SSR
   const { increment, decrement } = useStore(); // NB: inferred from the return of makeStore()
   return (
     <>
-      <h1>Hello, World</h1>
       <button onClick={decrement}>-</button>
       {count}
-      <button onClick={increment}>-</button>
+      <button onClick={increment}>+</button>
+    </>
+  );
+};
+
+/**
+ * An example Next page using the SSR version of the stately store.
+ */
+const Home = () => {
+  return (
+    <>
+      <h1>Hello, World</h1>
+      <Counter />
     </>
   );
 };
