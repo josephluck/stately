@@ -201,6 +201,8 @@ store.subscribe((previousState, nextState) => {
 Stately makes no assumptions about how you may wish to handle errors that occur, however it's advised that errors are caught when you call mutators and effects:
 
 ```typescript
+// Set up a ... dangerous effect!
+
 const launchMissiles = store.createEffect(() => {
   throw new Error("💥");
 });
