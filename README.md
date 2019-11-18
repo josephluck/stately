@@ -26,13 +26,14 @@
 - [Features](#features)
 - [Installation](#installation)
 - [Usage](#usage)
-- [Creating a store](#creating-a-store)
-- [Changing state](#changing-state)
-- [Effects](#effects)
-- [Subscribing to changes](#subscribing-to-changes)
-- [Replacing entire state](#replacing-entire-state)
-- [Logging](#logging)
-- [Error handling](#error-handling)
+  - [Creating a store](#creating-a-store)
+  - [Changing state](#changing-state)
+  - [Effects](#effects)
+  - [Subscribing to changes](#subscribing-to-changes)
+  - [Getting entire state](#getting-entire-state)
+  - [Replacing entire state](#replacing-entire-state)
+  - [Logging](#logging)
+  - [Error handling](#error-handling)
 - [Usage with React](#usage-with-react)
 - [Usage with Next](#usage-with-next)
 
@@ -65,11 +66,11 @@ npm i --save @josephluck/stately
 
 To see how to use Stately with React or Next, see the [examples](/examples).
 
-# How it works
+# Usage
 
 Stately is designed to be simple, practical and 100% type-safe without introducing lots of boilerplate!
 
-## Creating a store
+### Creating a store
 
 Stately infers the type of your state from what you pass it as it's initial state. State can be of any type.
 
@@ -85,7 +86,7 @@ const store = stately({
 });
 ```
 
-## Changing state
+### Changing state
 
 Changing state is done via Mutators. Mutators are functions that change the state of the store. Mutators are powered by immer, so you're able to mutate the state whilst retaining immutability under the hood so previous bindings to the state are not updated.
 
@@ -134,7 +135,7 @@ multiplyD(10);
 multiplyD("ten"); // Argument of type '"ten"' is not assignable to parameter of type 'number'. ts(2345)
 ```
 
-## Effects
+### Effects
 
 Effects are similar to mutators, except they do not update state and subscribers are not called.
 
@@ -160,7 +161,7 @@ asyncChangeA("yup...");
 asyncChangeA("nope", "not allowed"); // Fails: Expected 0-1 arguments, but got 2. ts(2554)
 ```
 
-## Subscribing to changes
+### Subscribing to changes
 
 A store can be subscribed to. Subscriptions get called when the state of the store changes via mutations. Subscriptions receive the previous state and the updated state of the entire store.
 
@@ -178,7 +179,17 @@ const unsubscribe = store.subscribe((previous, next) => {
 unsubscribe();
 ```
 
-## Replacing entire state
+### Getting entire state
+
+Stately returns a convenience method for getting the entire store's state:
+
+```typescript
+store.getState();
+```
+
+This method is intended as an imperative hook for library authors building tools on top of Stately and should generally be avoided in typical usage. Use [subscribers](#subscribing-to-changes) to be notified of store state updates!
+
+### Replacing entire state
 
 Stately returns a convenience method for replacing the entire store's state:
 
@@ -186,7 +197,7 @@ Stately returns a convenience method for replacing the entire store's state:
 store.replaceState(newStoreState);
 ```
 
-## Logging
+### Logging
 
 If you want to log every state change, it's as simple as creating a subscriber that logs for you:
 
@@ -196,7 +207,7 @@ store.subscribe((previousState, nextState) => {
 });
 ```
 
-## Error handling
+### Error handling
 
 Stately makes no assumptions about how you may wish to handle errors that occur, however it's advised that errors are caught when you call mutators and effects:
 
