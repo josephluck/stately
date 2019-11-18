@@ -21,15 +21,24 @@
   <br />
 </div>
 
+# Contents
+
+- [Features](#features)
+- [Installation](#installation)
+- [Example](#example)
+- [Usage with React](#usage-with-react)
+- [Usage with Next](#usage-with-next)
+
 # Features
 
-- Powered by functions
 - Only a handful of core concepts to learn
+- Powered by functions
 - Predictable and immutable state container
 - Mutable API powered by [immer](https://github.com/immerjs/immer)
 - 100% inferred type-safety
 - Subscription-based API for becoming notified of state updates
 - Comes with React Hooks bindings out of the box
+- Support for server-side-rendering (via Next)
 
 See the accompanying blog post for more information on how Stately came to be: https://josephluck.co.uk/blog/simple-state-management/
 
@@ -47,11 +56,7 @@ With npm:
 npm i --save @josephluck/stately
 ```
 
-With react:
-
-```bash
-yarn add @josephluck/stately react
-```
+To see how to use Stately with React or Next, see the [examples](/examples).
 
 # Example
 
@@ -174,7 +179,7 @@ Stately returns a convenience method for replacing the entire store's state:
 store.replaceState(newStoreState);
 ```
 
-### Usage with React
+# Usage with React
 
 Stately comes with bindings for React out-of-the-box via React Hooks.
 
@@ -226,7 +231,7 @@ const myState = useStately(state => state.foo[bar], [bar]);
 
 Whenever a dependency in the array of dependencies changes, the state will be re-mapped and the component will re-render.
 
-### Usage with Next
+# Usage with Next
 
 Stately comes with SSR support for Next.js which changes usage of the React example above to support SSR.
 
