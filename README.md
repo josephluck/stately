@@ -94,7 +94,7 @@ Creating a mutator returns a function that can be called to mutate the state. Th
 
 Mutators receive the latest state as the first argument, and can define any number of additional arguments. State is automatically typed.
 
-When mutators are called, any subscribers that have been added are called with the previous state and the updated state.
+When mutators are called, any subscribers that have been added are called with the previous state and the updated state. Mutators can't replace the entire state, see [replacing entire state](#replacing-entire-state) for how to do that.
 
 ```typescript
 /**
@@ -187,7 +187,7 @@ Stately returns a convenience method for getting the entire store's state:
 store.getState();
 ```
 
-This method is intended as an imperative hook for library authors building tools on top of Stately and should generally be avoided in typical usage. Use [subscribers](#subscribing-to-changes) to be notified of store state updates!
+This method is intended as an imperative hook for library authors building tools on top of Stately and should typically be avoided in general usage. Use [subscribers](#subscribing-to-changes) to be notified of store state updates!
 
 ### Replacing entire state
 
@@ -196,6 +196,8 @@ Stately returns a convenience method for replacing the entire store's state:
 ```typescript
 store.replaceState(newStoreState);
 ```
+
+This method is intended as an imperative means of replacing the entire store for library authors building tools on top of Stately and should typically be avoided in general usage. Use [mutators](#changing-state) to change state!
 
 ### Logging
 
