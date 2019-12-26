@@ -70,6 +70,19 @@ test("selectors / selection is not memoised when state is changed", t => {
   );
 });
 
+test("selectors / selection remains immutable when nested state changes", t => {
+  t.plan(3);
+  const store = stately(model);
+  const changeD = store.createMutator((state, d: number) => (state.b.d = d));
+  const selectB = store.createSelector(state => state.b);
+  const first = selectB();
+  t.equal(first.d, 1, "initial selector is correct");
+  changeD(10);
+  const second = selectB();
+  t.equal(first.d, 1, "initial selector is correct after state has changed");
+  t.equal(second.d, 10, "second selector is correct after state has changed");
+});
+
 test("selectors / selection with arguments is memoised when arguments are the same", t => {
   t.plan(2);
   const store = stately(model);
