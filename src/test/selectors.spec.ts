@@ -5,7 +5,15 @@ const model = {
   a: "a",
   b: {
     c: "d",
-    d: 1
+    d: 1,
+    e: {
+      f: "f",
+      g: 1
+    },
+    h: {
+      f: "f",
+      g: 1
+    }
   }
 };
 
@@ -21,6 +29,28 @@ test("selectors / selection is memoised when unrelated state is changed", t => {
     second,
     first,
     "simple selector returns strict equality compatible selector"
+  );
+});
+
+test("selectors / selection is memoised when unrelated state under same parent key is changed", t => {
+  t.plan(2);
+  const store = stately(model);
+  const changeH = store.createMutator(
+    (state, h: typeof model["b"]["h"]) => (state.b.h = h)
+  );
+  const selectE = store.createSelector(state => state.b.e);
+  const first = selectE();
+  changeH({ f: "ff", g: 2 });
+  const second = selectE();
+  t.deepEqual(
+    first,
+    { f: "f", g: 1 },
+    "first selectors return value remains unchanged after sibling state is changed"
+  );
+  t.strictEqual(
+    second,
+    first,
+    "selector returns strict equality compatible selector"
   );
 });
 
