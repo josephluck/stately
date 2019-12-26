@@ -33,6 +33,14 @@ const stately = <S>(state: S) => {
     ...args: RemoveFirstFromTuple<Parameters<typeof fn>>
   ): ReturnType<typeof fn> => fn(_state, ...args);
 
+  const createSelector = <Fn extends (state: S, ...args: any[]) => any>(
+    fn: Fn
+  ) => (
+    ...args: RemoveFirstFromTuple<Parameters<typeof fn>>
+  ): ReturnType<typeof fn> => {
+    return fn(_state, ...args);
+  };
+
   const subscribe = (sub: Subscription): Unsubscribe => {
     _subscriptions = [..._subscriptions, sub];
     return () => {
@@ -50,6 +58,7 @@ const stately = <S>(state: S) => {
   return {
     createMutator,
     createEffect,
+    createSelector,
     subscribe,
     getState: () => _state,
     replaceState
