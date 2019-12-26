@@ -46,6 +46,33 @@ multiplyD(10);
 multiplyD("ten"); // Argument of type '"ten"' is not assignable to parameter of type 'number'. ts(2345)
 
 /**
+ * Simple selector
+ */
+const selectA = store.createSelector(state => state.a);
+const a = selectA(); // Returns "a"
+
+/**
+ * Selectors are immutable
+ */
+const selectB = store.createSelector(state => state.b);
+const firstB = selectB(); // Returns { c: "c", d: 4 }
+multiplyD(10);
+const secondB = selectB(); // Returns { c: "c", d: 40 }
+firstB.d === 4; // Returns true
+secondB.d === 40; // Returns true
+
+/**
+ * Selectors take arguments
+ */
+const selectAndAddToD = store.createSelector(
+  (state, add: number) => state.b.d + add
+);
+const firstAdditionToD = selectAndAddToD(10); // Returns 14
+const secondAdditionToD = selectAndAddToD(100); // Returns 104
+selectAndAddToD(); // Expected 1 arguments, but got 0. ts(2554)
+selectAndAddToD("ten"); // Argument of type '"ten"' is not assignable to parameter of type 'number'. ts(2345)
+
+/**
  * Async effects, optional arguments
  */
 const asyncChangeA = store.createEffect(

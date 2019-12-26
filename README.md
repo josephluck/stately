@@ -28,6 +28,7 @@
 - [Usage](#usage)
   - [Creating a store](#creating-a-store)
   - [Changing state](#changing-state)
+  - [Selecting state](#selecting-state)
   - [Effects](#effects)
   - [Subscribing to changes](#subscribing-to-changes)
   - [Getting entire state](#getting-entire-state)
@@ -90,13 +91,21 @@ const store = stately({
 
 Changing state is done via Mutators. Mutators are functions that change the state of the store. Mutators are powered by immer, so you're able to mutate the state whilst retaining immutability under the hood so previous bindings to the state are not updated.
 
-Creating a mutator returns a function that can be called to mutate the state. This returned function returns the updated state when called.
-
 Mutators receive the latest state as the first argument, and can define any number of additional arguments. State is automatically typed.
+
+Creating a mutator returns a function that can be called to mutate the state. This returned function returns the updated state when called.
 
 When mutators are called, any subscribers that have been added are called with the previous state and the updated state. Mutators can't replace the entire state, see [replacing entire state](#replacing-entire-state) for how to do that.
 
 ```typescript
+const store = stately({
+  a: "a",
+  b: {
+    c: "c",
+    d: 4
+  }
+});
+
 /**
  * Single argument mutator
  */
@@ -135,6 +144,51 @@ multiplyD(10);
 multiplyD("ten"); // Argument of type '"ten"' is not assignable to parameter of type 'number'. ts(2345)
 ```
 
+### Selecting state
+
+A selector is a function that returns part of the store's state or a derivation of the stores state when called.
+
+A selector's implementation receives the latest state as the first argument, and can define any number of additional arguments. State is automatically typed whilst remaining arguments are statically typed. Creating a selector returns a function that can be called to select the state.
+
+Returned state from selectors remain unchanged when mutators are subsequently called and mutators that do not return new objects are memoised.
+
+```typescript
+const store = stately({
+  a: "a",
+  b: {
+    c: "c",
+    d: 4
+  }
+});
+
+/**
+ * Simple selector
+ */
+const selectA = store.createSelector(state => state.a);
+const a = selectA(); // Returns "a"
+
+/**
+ * Selectors are immutable
+ */
+const selectB = store.createSelector(state => state.b);
+const firstB = selectB(); // Returns { c: "c", d: 4 }
+multiplyD(10);
+const secondB = selectB(); // Returns { c: "c", d: 40 }
+firstB.d === 4; // Returns true
+secondB.d === 40; // Returns true
+
+/**
+ * Selectors take arguments
+ */
+const selectAndAddToD = store.createSelector(
+  (state, add: number) => state.b.d + add
+);
+const firstAdditionToD = selectAndAddToD(10); // Returns 14
+const secondAdditionToD = selectAndAddToD(100); // Returns 104
+selectAndAddToD(); // Expected 1 arguments, but got 0. ts(2554)
+selectAndAddToD("ten"); // Argument of type '"ten"' is not assignable to parameter of type 'number'. ts(2345)
+```
+
 ### Effects
 
 Effects are similar to mutators, except they do not update state and subscribers are not called.
@@ -144,6 +198,14 @@ Effects are useful for when a function needs the latest state of the store.
 The return of the effect's implementation is returned when it's called.
 
 ```typescript
+const store = stately({
+  a: "a",
+  b: {
+    c: "c",
+    d: 4
+  }
+});
+
 /**
  * Async effects, optional arguments
  */
@@ -166,6 +228,8 @@ asyncChangeA("nope", "not allowed"); // Fails: Expected 0-1 arguments, but got 2
 A store can be subscribed to. Subscriptions get called when the state of the store changes via mutations. Subscriptions receive the previous state and the updated state of the entire store.
 
 ```typescript
+const store = stately();
+
 /**
  * Adding a subscription
  */
@@ -184,6 +248,8 @@ unsubscribe();
 Stately returns a convenience method for getting the entire store's state:
 
 ```typescript
+const store = stately();
+
 store.getState();
 ```
 
@@ -194,6 +260,8 @@ This method is intended as an imperative hook for library authors building tools
 Stately returns a convenience method for replacing the entire store's state:
 
 ```typescript
+const store = stately();
+
 store.replaceState(newStoreState);
 ```
 
@@ -204,6 +272,8 @@ This method is intended as an imperative means of replacing the entire store for
 If you want to log every state change, it's as simple as creating a subscriber that logs for you:
 
 ```typescript
+const store = stately();
+
 store.subscribe((previousState, nextState) => {
   console.log("The store has updated", { previousState, nextState });
 });
@@ -214,6 +284,8 @@ store.subscribe((previousState, nextState) => {
 Stately makes no assumptions about how you may wish to handle errors that occur, however it's advised that errors are caught when you call mutators and effects:
 
 ```typescript
+const store = stately();
+
 // Set up a ... dangerous effect!
 
 const launchMissiles = store.createEffect(() => {
