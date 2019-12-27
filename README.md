@@ -152,7 +152,7 @@ A selector is a function that returns part of the store's state or a derivation 
 
 A selector's implementation receives the latest state as the first argument, and can define any number of additional arguments. State is automatically typed whilst remaining arguments are statically typed. Creating a selector returns a function that can be called to select the state.
 
-Returned state from selectors remain unchanged when mutators are subsequently called and mutators that do not return new objects are memoised.
+Returned state from selectors remains immutable (unchanged) when mutators are subsequently later on. Stately implements structural-sharing, so selectors that do not return new objects are automatically memoized. If you wish to memoize selectors that create new objects, you can use a memoization library like `memoize-one` in your selector's implementation to memoize based on the selector's input arguments (example below) which is useful when pairing stately with libraries like React where performance based on value equality is important. This technique works because stately's state is immutable and can be strictly compared.
 
 ```typescript
 const store = stately({
@@ -189,6 +189,25 @@ const firstAdditionToD = selectAndAddToD(10); // Returns 14
 const secondAdditionToD = selectAndAddToD(100); // Returns 104
 selectAndAddToD(); // Expected 1 arguments, but got 0. ts(2554)
 selectAndAddToD("ten"); // Argument of type '"ten"' is not assignable to parameter of type 'number'. ts(2345)
+
+/**
+ * Selectors that return new objects are not memoized (or equal)
+ */
+const selectorWithNewObj = store.createSelector(state => ({ newObj: state.b }));
+const firstNewObjSelection = selectorWithNewObj();
+const secondNewObjSelection = selectorWithNewObj();
+firstNewObjSelection === secondNewObjSelection; // Returns false
+
+/**
+ * Selectors that return new objects that implement memoization are memoized
+ */
+import memoize from "memoize-one";
+const memoizedSelectorWithNewObj = store.createSelector(
+  memoize(state => ({ newObj: state.b }))
+);
+const firstMemoizedNewObjSelection = memoizedSelectorWithNewObj();
+const secondMemoizedNewObjSelection = memoizedSelectorWithNewObj();
+firstMemoizedNewObjSelection === secondMemoizedNewObjSelection; // Returns true
 ```
 
 ### Effects

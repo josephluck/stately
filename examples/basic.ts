@@ -73,6 +73,25 @@ selectAndAddToD(); // Expected 1 arguments, but got 0. ts(2554)
 selectAndAddToD("ten"); // Argument of type '"ten"' is not assignable to parameter of type 'number'. ts(2345)
 
 /**
+ * Selectors that return new objects are not memoized (or equal)
+ */
+const selectorWithNewObj = store.createSelector(state => ({ newObj: state.b }));
+const firstNewObjSelection = selectorWithNewObj();
+const secondNewObjSelection = selectorWithNewObj();
+firstNewObjSelection === secondNewObjSelection; // Returns false
+
+/**
+ * Selectors that return new objects that implement memoization are memoized
+ */
+import memoize from "memoize-one";
+const memoizedSelectorWithNewObj = store.createSelector(
+  memoize(state => ({ newObj: state.b }))
+);
+const firstMemoizedNewObjSelection = memoizedSelectorWithNewObj();
+const secondMemoizedNewObjSelection = memoizedSelectorWithNewObj();
+firstMemoizedNewObjSelection === secondMemoizedNewObjSelection; // Returns true
+
+/**
  * Async effects, optional arguments
  */
 const asyncChangeA = store.createEffect(

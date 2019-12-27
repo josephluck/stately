@@ -1,4 +1,5 @@
 import test from "tape";
+import memoize from "memoize-one";
 import stately from "..";
 
 const model = {
@@ -17,7 +18,7 @@ const model = {
   }
 };
 
-test("selectors / selection is memoised when unrelated state is changed", t => {
+test("selectors / selection is memoized when unrelated state is changed", t => {
   t.plan(1);
   const store = stately(model);
   const changeA = store.createMutator((state, a: string) => (state.a = a));
@@ -32,7 +33,7 @@ test("selectors / selection is memoised when unrelated state is changed", t => {
   );
 });
 
-test("selectors / selection is memoised when unrelated state under same parent key is changed", t => {
+test("selectors / selection is memoized when unrelated state under same parent key is changed", t => {
   t.plan(2);
   const store = stately(model);
   const changeH = store.createMutator(
@@ -54,10 +55,9 @@ test("selectors / selection is memoised when unrelated state under same parent k
   );
 });
 
-test("selectors / selection is not memoised when state is changed", t => {
+test("selectors / selection is not memoized when state is changed", t => {
   t.plan(1);
   const store = stately(model);
-  store.subscribe(console.log);
   const changeC = store.createMutator((state, c: string) => (state.b.c = c));
   const selectB = store.createSelector(state => state.b);
   const first = selectB();
@@ -67,6 +67,52 @@ test("selectors / selection is not memoised when state is changed", t => {
     second,
     first,
     "simple selector returns strict equality compatible selector"
+  );
+});
+
+test("selectors / selection is not memoized when selector returns new object", t => {
+  t.plan(1);
+  const store = stately(model);
+  const selectorWithNewObj = store.createSelector(state => ({
+    newObj: state.b
+  }));
+  const first = selectorWithNewObj();
+  const second = selectorWithNewObj();
+  t.notStrictEqual(
+    second,
+    first,
+    "selector that returns new object is not memoized"
+  );
+});
+
+test("selectors / selection is memoized when selector that returns new object is memoized manually", t => {
+  t.plan(1);
+  const store = stately(model);
+  const memoizedSelectorWithNewObj = store.createSelector(
+    memoize((state: typeof model) => ({
+      newObj: state.b
+    }))
+  );
+  const first = memoizedSelectorWithNewObj();
+  const second = memoizedSelectorWithNewObj();
+  t.strictEqual(second, first, "selector that returns new object is memoized");
+});
+
+test("selectors / selection is memoized when selector that returns new object (with arguments) is memoized manually", t => {
+  t.plan(1);
+  const store = stately(model);
+  const memoizedSelectorWithNewObj = store.createSelector(
+    memoize((state: typeof model, anArgument: any) => ({
+      newObj: state.b,
+      anArgument
+    }))
+  );
+  const first = memoizedSelectorWithNewObj("an argument");
+  const second = memoizedSelectorWithNewObj("an argument");
+  t.strictEqual(
+    second,
+    first,
+    "selector with arguments that returns new object is memoized"
   );
 });
 
@@ -105,7 +151,7 @@ test("selectors / selection is correct when used in combination with subscriptio
   changeD(500);
 });
 
-test("selectors / selection with arguments is memoised when arguments are the same", t => {
+test("selectors / selection with arguments is memoized when arguments are the same", t => {
   t.plan(2);
   const store = stately(model);
   const selectAndAddToD = store.createSelector(
@@ -121,7 +167,7 @@ test("selectors / selection with arguments is memoised when arguments are the sa
   );
 });
 
-test("selectors / selection with arguments that affect selection is memoised when arguments are the same", t => {
+test("selectors / selection with arguments that affect selection is memoized when arguments are the same", t => {
   t.plan(2);
   const store = stately(model);
   const changeA = store.createMutator((state, a: string) => (state.a = a));
