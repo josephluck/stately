@@ -1,6 +1,5 @@
 import React from "react";
 import ReactDOM from "react-dom";
-
 import stately from "@josephluck/stately";
 import makeUseStately from "@josephluck/stately/lib/hooks";
 

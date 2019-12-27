@@ -83,6 +83,28 @@ test("selectors / selection remains immutable when nested state changes", t => {
   t.equal(second.d, 10, "second selector is correct after state has changed");
 });
 
+test("selectors / selection is correct when used in combination with subscription", t => {
+  t.plan(3);
+  let count = 0;
+  const store = stately(model);
+  const changeD = store.createMutator((state, d: number) => (state.b.d = d));
+  const selectB = store.createSelector(state => state.b);
+  store.subscribe(() => {
+    const selected = selectB();
+    if (count === 0) {
+      t.equal(selected.d, 10, "first selection in subscription is correct");
+    } else if (count === 1) {
+      t.equal(selected.d, 20, "second selection in subscription is correct");
+    } else if (count === 2) {
+      t.equal(selected.d, 500, "second selection in subscription is correct");
+    }
+    count++;
+  });
+  changeD(10);
+  changeD(20);
+  changeD(500);
+});
+
 test("selectors / selection with arguments is memoised when arguments are the same", t => {
   t.plan(2);
   const store = stately(model);
