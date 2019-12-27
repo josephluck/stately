@@ -21,6 +21,8 @@
   <br />
 </div>
 
+[![npm version](https://img.shields.io/npm/v/@josephluck/stately.svg?style=flat)](https://www.npmjs.com/package/@josephluck/stately) [![CircleCI Status](https://circleci.com/gh/josephluck/stately.svg?style=shield&circle-token=:circle-token)](https://circleci.com/gh/josephluck/stately)
+
 # Contents
 
 - [Features](#features)
