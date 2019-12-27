@@ -1,14 +1,20 @@
-import React, { Component, useEffect, useState, useContext, createContext } from "react";
+import React, {
+  Component,
+  useEffect,
+  useState,
+  useContext,
+  createContext
+} from "react";
 import { NextPageContext, NextComponentType } from "next";
 
-import { StatelyReturn } from ".";
+import { StatelyReturn } from "./types";
 
 const STORE_KEY = "__STATELY_STORE__";
 const isServer = () => typeof window === "undefined";
 
 const initStore = <
   MS extends () => {
-    store: StatelyReturn;
+    store: StatelyReturn<any>;
   }
 >(
   makeStore: MS
@@ -25,7 +31,7 @@ const initStore = <
 
 export const statelySSR = <
   MS extends () => {
-    store: StatelyReturn;
+    store: StatelyReturn<any>;
   }
 >(
   makeStore: MS

@@ -1,10 +1,10 @@
 import immer from "immer";
-import { DeepReadonly, RemoveFirstFromTuple } from "./types";
+import { DeepReadonly, RemoveFirstFromTuple, StatelyReturn } from "./types";
 
-const stately = <S>(initialState: S) => {
+const stately = <S>(initialState: S): StatelyReturn<S> => {
   /** Represents an readonly version of S */
   type IS = DeepReadonly<typeof initialState>;
-  type Unsubscribe = () => any;
+  type Unsubscribe = () => void;
   type Subscription = (prevState: IS, newState: IS) => any;
 
   let _state = initialState;
@@ -60,5 +60,3 @@ const stately = <S>(initialState: S) => {
 };
 
 export default stately;
-
-export type StatelyReturn = ReturnType<typeof stately>;

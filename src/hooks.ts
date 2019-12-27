@@ -1,7 +1,7 @@
-import { StatelyReturn } from "./";
 import { useState, useEffect } from "react";
+import { StatelyReturn } from "./types";
 
-const makeUseStately = <S extends StatelyReturn>(store: S) => {
+const makeUseStately = <S extends StatelyReturn<any>>(store: S) => {
   type State = ReturnType<typeof store["getState"]>;
   type Mapper = (state: State) => any;
 
