@@ -1172,9 +1172,9 @@
     "@types/yargs" "^13.0.0"
 
 "@josephluck/stately@*":
-  version "1.1.3"
-  resolved "https://registry.yarnpkg.com/@josephluck/stately/-/stately-1.1.3.tgz#72a21c0cb06b168adc25005eff5a2ee67fab9a12"
-  integrity sha512-WwzxpUhiuntu8IJ6KOJ2uPcmitq1613YJ9GvYZblWiSRrxC2Dn9rSBc4QYlE/tDZCxLZZpdPNwZapKS1kn9yng==
+  version "1.1.4"
+  resolved "https://registry.yarnpkg.com/@josephluck/stately/-/stately-1.1.4.tgz#885eb84f021cc1f4e82afef41d63efafd5a6ce48"
+  integrity sha512-9szR4I4uXuy8mUUyxGfkBaEMAAFwSNLVZQ9xsdGfE8D/lzR6v5UX8Fh8OvhpoFm3+B6ZBUIpjhwMpRm4R80wQw==
   dependencies:
     immer "^5.0.0"
 
