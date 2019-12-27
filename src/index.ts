@@ -1,26 +1,13 @@
 import immer from "immer";
+import { DeepReadonly, RemoveFirstFromTuple } from "./types";
 
-export type RemoveFirstFromTuple<T extends any[]> = T["length"] extends 0
-  ? []
-  : ((...b: T) => any) extends (a, ...b: infer I) => any
-  ? I
-  : [];
-
-type DeepReadonly<T> = T extends {}
-  ? {
-      readonly [P in keyof T]: T[P] extends {}
-        ? DeepReadonly<T[P]>
-        : Readonly<T>;
-    }
-  : Readonly<T>;
-
-const stately = <S>(state: S) => {
+const stately = <S>(initialState: S) => {
   /** Represents an readonly version of S */
-  type IS = DeepReadonly<S>;
+  type IS = DeepReadonly<typeof initialState>;
   type Unsubscribe = () => any;
   type Subscription = (prevState: IS, newState: IS) => any;
 
-  let _state = state;
+  let _state = initialState;
   let _subscriptions: Subscription[] = [];
 
   const notifySubscribers = (prevState: S, newState: S) =>
@@ -28,7 +15,7 @@ const stately = <S>(state: S) => {
 
   const createMutator = <Fn extends (state: S, ...args: any[]) => any>(
     fn: Fn
-  ) => (...args: RemoveFirstFromTuple<Parameters<typeof fn>>): IS => {
+  ) => (...args: RemoveFirstFromTuple<Parameters<Fn>>): IS => {
     const newState = immer(_state, draft => {
       fn(draft as S, ...args);
     });
@@ -39,15 +26,12 @@ const stately = <S>(state: S) => {
 
   const createEffect = <Fn extends (state: IS, ...args: any[]) => any>(
     fn: Fn
-  ) => (
-    ...args: RemoveFirstFromTuple<Parameters<typeof fn>>
-  ): ReturnType<typeof fn> => fn(_state as IS, ...args);
+  ) => (...args: RemoveFirstFromTuple<Parameters<Fn>>): ReturnType<Fn> =>
+    fn(_state as IS, ...args);
 
   const createSelector = <Fn extends (state: IS, ...args: any[]) => any>(
     fn: Fn
-  ) => (
-    ...args: RemoveFirstFromTuple<Parameters<typeof fn>>
-  ): ReturnType<typeof fn> => {
+  ) => (...args: RemoveFirstFromTuple<Parameters<Fn>>): ReturnType<Fn> => {
     return fn(_state as IS, ...args);
   };
 
@@ -75,6 +59,6 @@ const stately = <S>(state: S) => {
   };
 };
 
-export type StatelyReturn = ReturnType<typeof stately>;
-
 export default stately;
+
+export type StatelyReturn = ReturnType<typeof stately>;

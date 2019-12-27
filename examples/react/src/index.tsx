@@ -36,7 +36,7 @@ interface CounterProps {
   decrement: () => void;
 }
 const Counter = React.memo(({ state, increment, decrement }: CounterProps) => {
-  console.log(`Rendering counter ${name}`);
+  console.log(`Rendering counter ${state.name}`);
   return (
     <div>
       <button onClick={decrement}>-</button>
