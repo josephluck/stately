@@ -1,9 +1,9 @@
 import immer from "immer";
-import { DeepReadonly, RemoveFirstFromTuple, StatelyReturn } from "./types";
+import { RemoveFirstFromTuple, StatelyReturn } from "./types";
 
 const stately = <S>(initialState: S): StatelyReturn<S> => {
-  /** Represents an readonly version of S */
-  type IS = DeepReadonly<typeof initialState>;
+  /** Represents inferred type of initialState */
+  type IS = typeof initialState;
 
   /** Types a subscription's removal fn */
   type Unsubscribe = () => void;
