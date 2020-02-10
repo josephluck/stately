@@ -52,6 +52,7 @@ const stately = <S>(initialState: S): StatelyReturn<S> => {
   /** Registers a subscription on the store for receiving updates to the state */
   const subscribe = (sub: Subscription): Unsubscribe => {
     _subscriptions = [..._subscriptions, sub];
+    sub(_previousState as IS, _state as IS);
     return () => {
       _subscriptions = _subscriptions.filter(
         (_, i) => i !== _subscriptions.indexOf(sub)

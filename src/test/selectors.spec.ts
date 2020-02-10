@@ -130,7 +130,7 @@ test("selectors / selection remains immutable when nested state changes", t => {
 });
 
 test("selectors / selection is correct when used in combination with subscription", t => {
-  t.plan(3);
+  t.plan(4);
   let count = 0;
   const store = stately(model);
   const changeD = store.createMutator((state, d: number) => (state.b.d = d));
@@ -138,11 +138,13 @@ test("selectors / selection is correct when used in combination with subscriptio
   store.subscribe(() => {
     const selected = selectB();
     if (count === 0) {
-      t.equal(selected.d, 10, "first selection in subscription is correct");
+      t.equal(selected.d, 1, "first selection in subscription is correct");
     } else if (count === 1) {
-      t.equal(selected.d, 20, "second selection in subscription is correct");
+      t.equal(selected.d, 10, "second selection in subscription is correct");
     } else if (count === 2) {
-      t.equal(selected.d, 500, "second selection in subscription is correct");
+      t.equal(selected.d, 20, "third selection in subscription is correct");
+    } else if (count === 3) {
+      t.equal(selected.d, 500, "fourth selection in subscription is correct");
     }
     count++;
   });

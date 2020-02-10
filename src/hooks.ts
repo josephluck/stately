@@ -14,8 +14,6 @@ const makeUseStately = <S extends StatelyReturn<any>>(store: S) => {
     );
 
     useEffect(() => {
-      setMappedState(mapState(store.getState() as State));
-
       const unsubscribe = store.subscribe((_, nextState) => {
         const nextMappedState = mapState(nextState as State);
         setMappedState(nextMappedState);

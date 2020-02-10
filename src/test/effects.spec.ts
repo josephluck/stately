@@ -27,12 +27,16 @@ test("effects / simple", t => {
 });
 
 test("subscriptions / simple", t => {
+  let ran = 0; // NB: needed to avoid checking initial subscription call
   t.plan(3);
   const store = stately(model);
   store.subscribe((prevState, nextState) => {
-    t.equal(prevState.a, "a", "previous state remains unchanged");
-    t.equal(prevState.b.c, "d", "previous state remains unchanged");
-    t.equal(nextState.a, "aa", "next state reflects updated state");
+    if (ran === 1) {
+      t.equal(prevState.a, "a", "previous state remains unchanged");
+      t.equal(prevState.b.c, "d", "previous state remains unchanged");
+      t.equal(nextState.a, "aa", "next state reflects updated state");
+    }
+    ran++;
   });
   const changeA = store.createMutator((state, a: string) => (state.a = a));
   changeA("aa");
