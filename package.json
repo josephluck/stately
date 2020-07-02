@@ -1,6 +1,6 @@
 {
   "name": "@josephluck/stately",
-  "version": "1.1.8",
+  "version": "1.1.9",
   "description": "Functional, immutable state management",
   "main": "./lib/index.js",
   "files": [
@@ -14,6 +14,7 @@
   "types": "./lib/index.d.ts",
   "scripts": {
     "test": "ts-node node_modules/.bin/tape ./src/test/*.spec.ts | tap-spec",
+    "test:types": "tsc --noEmit",
     "build": "rm -rf ./lib && mkdir lib && tsc",
     "deploy": "npm run build && npm publish"
   },

@@ -11,11 +11,9 @@
     "outDir": "lib",
     "sourceMap": false,
     "lib": ["es6", "es7", "dom"],
-    "noUnusedLocals": true,
-    "strictNullChecks": false,
     "removeComments": false,
-    "noImplicitAny": false,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "strict": true
   },
   "include": ["src/**/*"]
 }

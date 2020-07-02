@@ -3,7 +3,7 @@ import React, {
   useEffect,
   useState,
   useContext,
-  createContext
+  createContext,
 } from "react";
 import { NextPageContext, NextComponentType } from "next";
 
@@ -21,11 +21,11 @@ const initStore = <
 ): ReturnType<typeof makeStore> => {
   if (isServer()) {
     return makeStore() as any;
-  } else if (window[STORE_KEY]) {
-    return window[STORE_KEY];
+  } else if ((window as any)[STORE_KEY]) {
+    return (window as any)[STORE_KEY];
   } else {
-    window[STORE_KEY] = makeStore();
-    return window[STORE_KEY];
+    (window as any)[STORE_KEY] = makeStore();
+    return (window as any)[STORE_KEY];
   }
 };
 
@@ -101,7 +101,7 @@ export const statelySSR = <
   return {
     withStately,
     useStore,
-    useStoreState
+    useStoreState,
   };
 };
 

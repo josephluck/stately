@@ -1,6 +1,6 @@
 export type RemoveFirstFromTuple<T extends any[]> = T["length"] extends 0
   ? []
-  : ((...b: T) => any) extends (a, ...b: infer I) => any
+  : ((...b: T) => any) extends (a: any, ...b: infer I) => any
   ? I
   : T;
 
